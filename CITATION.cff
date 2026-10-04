@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+message: "If you use this software or cite the paper, please use the metadata below."
+title: "The Dialectical Cage and the Glass-Box Governor"
+type: software
+version: 0.1.0
+date-released: "2026-10-04"
+license: MIT
+repository-code: "https://github.com/canon4d/the-dialectical-cage-and-the-glass-box-governor"
+url: "https://ai.necessaryuniverse.com"
+abstract: "Reference-monitor prototype (Protected File Mutation Profile v1) accompanying the paper The Dialectical Cage and the Glass-Box Governor: a practice-based ethics, safety constitution, and reference-monitor architecture for AI agents."
+keywords: [AI safety, runtime verification, capability security, reference monitor, agent security]
+authors:
+  - alias: "Canon"
+    email: "canon@necessaryuniverse.com"
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.21278446"
+    description: "Zenodo record"
+preferred-citation:
+  type: article
+  title: "The Dialectical Cage and the Glass-Box Governor: A Practice-Based Ethics, Safety Constitution, and Reference-Monitor Architecture for AI Agents"
+  authors:
+    - alias: "Canon"
+  year: 2026
+  doi: "10.5281/zenodo.21278446"
+  url: "https://doi.org/10.5281/zenodo.21278446"

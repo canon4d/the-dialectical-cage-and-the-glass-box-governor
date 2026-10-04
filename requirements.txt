@@ -1,0 +1,2 @@
+# The reference implementation and the whole test/evaluation harness use the
+# Python standard library only (3.10+). Nothing to install.

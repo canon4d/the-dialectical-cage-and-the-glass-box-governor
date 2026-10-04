@@ -1,0 +1,39 @@
+{
+  "project": "glass-box-governor",
+  "version": "v0.1.0",
+  "release_tag": "UNRELEASED",
+  "commit": "UNCOMMITTED",
+  "profile": {
+    "id": "protected-file-v1",
+    "version": "1.0.0",
+    "sha256": "53ef50ea5bb701879b05ce68a1ae5215a2dae53a19cb4e05203f8650badd3b1e"
+  },
+  "policy": {
+    "version": "protected-file-v1.policy.1",
+    "sha256": "7226ab3359976a0c3e5c9d208cc75a11e1c37fc736b43c07de9771b9e4e71576"
+  },
+  "tests": {
+    "suite": "attack-corpus-1",
+    "suite_sha256": "31334c257faf0dbdd838346b4622d6d1a74756fefee592f8d977f380d1764c60",
+    "results_json_sha256": "3e1941010b309b7dfc37a3935c056a1f165a775490efa9d774ca0499773afea1",
+    "results_md_sha256": "d225d4c18521370af357847996d6e29506444603e554717657db86d281b50864",
+    "core_sha256": "013b7ced03fac4fc31092e36a812c0e6026e564e85f6f4ac707942850777a34a"
+  },
+  "paper": {
+    "pdf_sha256": "0fb34d207f97e01deaedbb8325f36b070b437a815441eae142af0bccfa35d2a2",
+    "source_sha256": "bd4c2dedde78d830a533dea41074d3349e28941506a5c703305efa505df1e12d"
+  },
+  "inputs_required_to_reproduce": [
+    "governor/*.py",
+    "evaluation/*.py",
+    "profiles/*",
+    "tests/**",
+    "scripts/run_release_tests.py"
+  ],
+  "reproduce": "python3 scripts/run_release_tests.py && python3 scripts/verify_results.py",
+  "zenodo": {
+    "doi": "10.5281/zenodo.21278446",
+    "record": "https://doi.org/10.5281/zenodo.21278446"
+  },
+  "note": "doi stays PENDING until the Zenodo record is live; then run: python3 scripts/build_manifest.py --doi 10.5281/zenodo.21278446"
+}

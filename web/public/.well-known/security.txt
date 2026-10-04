@@ -1,0 +1,5 @@
+Contact: mailto:canon@necessaryuniverse.com
+Expires: 2027-09-30T00:00:00.000Z
+Preferred-Languages: en
+Canonical: https://ai.necessaryuniverse.com/.well-known/security.txt
+Policy: https://github.com/canon4d/the-dialectical-cage-and-the-glass-box-governor/blob/main/SECURITY.md

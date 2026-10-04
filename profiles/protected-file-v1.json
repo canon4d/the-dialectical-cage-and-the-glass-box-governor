@@ -1,0 +1,48 @@
+{
+  "profile_id": "protected-file-v1",
+  "profile_version": "1.0.0",
+  "title": "Protected File Mutation Profile v1",
+  "description": "Smallest closed effect surface for the Glass-Box Governor prototype: mutation of two declared files through one in-process reference monitor.",
+  "principals": [
+    { "id": "agent-demo", "type": "untrusted-agent" },
+    { "id": "agent-observer", "type": "untrusted-agent" },
+    { "id": "agent-other", "type": "untrusted-agent" }
+  ],
+  "resources": [
+    { "id": "record-a", "path": "protected/record-a.txt", "versioning": "monotonic" },
+    { "id": "record-b", "path": "protected/record-b.txt", "versioning": "monotonic" }
+  ],
+  "effects": ["write_file", "delete_file"],
+  "authorization_requirements": [
+    "principal", "exact_effect", "exact_resource", "resource_version",
+    "expiry", "policy_hash", "revocation_epoch", "one_shot_nonce"
+  ],
+  "fail_safe": {
+    "UNKNOWN": "BLOCK",
+    "malformed_capability": "BLOCK",
+    "missing_capability": "BLOCK",
+    "expired_capability": "BLOCK",
+    "revoked_capability": "BLOCK",
+    "principal_mismatch": "BLOCK",
+    "scope_mismatch": "BLOCK",
+    "stale_state": "BLOCK",
+    "policy_unavailable": "BLOCK",
+    "policy_mismatch": "BLOCK",
+    "evidence_witness_unavailable": "BLOCK for effects in evidence.required_before_effect"
+  },
+  "evidence": {
+    "required_before_effect": ["write_file", "delete_file"],
+    "format": "hash-chained records, see docs/evidence-model.md"
+  },
+  "delegation": "NOT_IMPLEMENTED (capabilities with a parent_capability_id are rejected)",
+  "declared_residuals": [
+    "Any filesystem location other than the two declared resources",
+    "OS-level channels not enclosed by this profile (subprocess, shell, IPC, plugins, schedulers)",
+    "Same-uid processes that can write the files directly (no privilege separation in v0.1)",
+    "Physical access and covert channels",
+    "Semantic judgments about content (the monitor is purely mechanical)",
+    "Compromise of the host, interpreter, standard library or the signing key",
+    "Effects not represented in this profile's effect set"
+  ],
+  "channel_inventory": "profiles/PROTECTED-FILE-V1-CHANNEL-INVENTORY.md"
+}

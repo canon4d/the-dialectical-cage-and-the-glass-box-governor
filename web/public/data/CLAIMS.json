@@ -1,0 +1,165 @@
+{
+  "version": 1,
+  "project": "glass-box-governor",
+  "release_scope": "v0.1.0 — Protected File Mutation Profile v1",
+  "status_vocabulary": {
+    "SPECIFIED": "Stated in the paper or SPEC.md; not implemented or not tested here.",
+    "IMPLEMENTED": "Code exists; no dedicated test evidence yet.",
+    "LOCALLY_TESTED": "Implemented and exercised by the committed, deterministic test/attack corpus on the author's side. Not independently reproduced.",
+    "REPRODUCED": "Independently reproduced by someone other than the author.",
+    "INDEPENDENTLY_REVIEWED": "Reviewed by an independent party with a published report.",
+    "PRODUCTION_VALIDATED": "Validated in a production deployment with evidence.",
+    "OPEN": "Not established; an outside engineer could design a test or proof for it.",
+    "RESIDUAL": "Outside the theorem's boundary by declaration (paper section 10.15).",
+    "NOT_APPLICABLE": "Does not apply to this release."
+  },
+  "epistemic_labels": {
+    "D": "Derivation relative to explicit premises",
+    "A": "Declared normative / deployment assumption",
+    "S": "Security or invariant claim dependent on trusted-system conditions",
+    "E": "Empirical assurance claim requiring measurement",
+    "R": "Residual / open region"
+  },
+  "claims": [
+    {
+      "id": "CLM-001",
+      "text": "For the declared attack corpus, no unauthorized mutation of the two protected files occurred when requests went through the reference monitor.",
+      "scope": "protected-file-v1, attack-corpus-1, in-process monitor",
+      "status": "LOCALLY_TESTED", "epistemic": "E", "evidence_class": "G-Omech",
+      "assumptions": ["C1 (partial: declared effect surface only, not established)", "C2", "C5", "C6", "C7"],
+      "evidence": {"families": ["F02", "F03", "F04", "F05", "F06", "F07", "F08", "F09", "F10", "F11", "F12", "F13", "F14", "F15", "F16", "F17"], "artifacts": ["results/results.json", "tests/adversarial/test_attack_corpus.py"]},
+      "limitations": ["Finite corpus; zero observed failures do not prove zero real-world risk", "No complete-mediation proof", "No independent audit"]
+    },
+    {
+      "id": "CLM-002",
+      "text": "A capability is bound to one principal, one effect and one resource; substitution of any of the three is blocked, and edits to a signed capability are detected.",
+      "scope": "protected-file-v1", "status": "LOCALLY_TESTED", "epistemic": "S", "evidence_class": "G-Omech",
+      "assumptions": ["C5"],
+      "evidence": {"families": ["F05", "F06", "F07", "F12"], "artifacts": ["governor/capability.py", "governor/monitor.py"]},
+      "limitations": ["HMAC (symmetric): compromise of the monitor implies capability forgery", "Principal attribution is by declared id; no authentication of the requesting process"]
+    },
+    {
+      "id": "CLM-003",
+      "text": "Expired, not-yet-valid and revoked capabilities (by id or by epoch) are rejected.",
+      "scope": "protected-file-v1", "status": "LOCALLY_TESTED", "epistemic": "S", "evidence_class": "G-Omech",
+      "assumptions": ["C5", "C7"],
+      "evidence": {"families": ["F03", "F04"], "artifacts": ["governor/monitor.py", "governor/state.py"]},
+      "limitations": ["Time comes from the host clock; clock tampering is out of scope", "Revocation store is in-memory in v0.1"]
+    },
+    {
+      "id": "CLM-004",
+      "text": "A single-use capability cannot be spent twice, including under concurrent attempts within one process.",
+      "scope": "protected-file-v1, single process", "status": "LOCALLY_TESTED", "epistemic": "S", "evidence_class": "G-Omech",
+      "assumptions": ["C6"],
+      "evidence": {"families": ["F08"], "artifacts": ["evaluation/race.py", "tests/adversarial/test_ablation_and_race.py"]},
+      "limitations": ["Atomicity comes from one in-process lock; multi-process or distributed atomicity is not demonstrated", "State/version binding independently blocks replays, so the single-use check is redundant for version-bound capabilities (reported by the ablation)"]
+    },
+    {
+      "id": "CLM-005",
+      "text": "Resource state is revalidated at execution time; a capability issued for a superseded version is rejected.",
+      "scope": "protected-file-v1", "status": "LOCALLY_TESTED", "epistemic": "S", "evidence_class": "G-Omech",
+      "assumptions": ["C6"],
+      "evidence": {"families": ["F09"], "artifacts": ["governor/state.py", "governor/monitor.py"]},
+      "limitations": ["Revalidation and commit are atomic only with respect to other mediated requests", "Non-mediated writers are detected afterwards (CLM-009), not excluded"]
+    },
+    {
+      "id": "CLM-006",
+      "text": "Unresolvable safety state (policy, revocation, resource metadata, evidence witness) is treated as UNKNOWN and mapped to BLOCK.",
+      "scope": "protected-file-v1", "status": "LOCALLY_TESTED", "epistemic": "S", "evidence_class": "G-Omech",
+      "assumptions": ["C7", "C8 (partial)"],
+      "evidence": {"families": ["F14", "F15"], "artifacts": ["governor/monitor.py"]},
+      "limitations": ["Failures are injected by test doubles, not by real infrastructure faults", "If the evidence witness fails after commit, the effect has already happened; the gap is reported, not prevented"]
+    },
+    {
+      "id": "CLM-007",
+      "text": "Capabilities are bound to the active policy hash, a deny-by-default policy is evaluated per request, and candidate policies are statically checked at admission against the Safety Profile.",
+      "scope": "protected-file-v1", "status": "LOCALLY_TESTED", "epistemic": "S", "evidence_class": "G-Omech",
+      "assumptions": ["C4 (not established)"],
+      "evidence": {"families": ["F10", "F16"], "artifacts": ["governor/policy.py", "tests/unit/test_policy.py"]},
+      "limitations": ["Restricted exact-match language; executable admission check only", "No proof object and no machine-checked refinement checker (paper condition C4/PAV remains open)"]
+    },
+    {
+      "id": "CLM-008",
+      "text": "Every mediated request produces a structured, hash-chained evidence record from which the request, the checks passed or failed, and the outcome can be reconstructed.",
+      "scope": "protected-file-v1", "status": "LOCALLY_TESTED", "epistemic": "E", "evidence_class": "G-Omech",
+      "assumptions": ["C8 (partial)"],
+      "evidence": {"artifacts": ["governor/evidence.py", "results/results.json#evidence", "tests/unit/test_state_evidence.py"]},
+      "limitations": ["Local log only; no external witness", "Hash chain detects naive tampering; it does not establish legal non-repudiation", "Evidence completeness across alternate paths is not established"]
+    },
+    {
+      "id": "CLM-009",
+      "text": "A change to a protected file made through a non-mediated channel is detected on the next mediated request and that request is blocked.",
+      "scope": "protected-file-v1", "status": "LOCALLY_TESTED", "epistemic": "E", "evidence_class": "G-Omech",
+      "assumptions": [],
+      "evidence": {"families": ["F17"], "artifacts": ["evaluation/bypass.py", "tests/adversarial/test_bypass.py"]},
+      "limitations": ["Detection after the fact, not prevention", "An attacker who also rewrites the version sidecar consistently is not detected by this mechanism"]
+    },
+    {
+      "id": "CLM-010",
+      "text": "Complete mediation of the protected effect surface (condition C1).",
+      "scope": "protected-file-v1", "status": "OPEN", "epistemic": "S", "evidence_class": "G-Omech",
+      "assumptions": ["C1"],
+      "evidence": {"artifacts": ["profiles/PROTECTED-FILE-V1-CHANNEL-INVENTORY.md", "results/results.json#environment_dependent"]},
+      "limitations": ["v0.1 runs monitor and mediated code in one process and uid; direct writes are possible (bypass probe)", "Roadmap v0.2: OS-level privilege separation and alternate-path tests"]
+    },
+    {
+      "id": "CLM-011",
+      "text": "Conformance of the monitor to verified semantics (kernel conformance, C3) and integrity of the trusted core (C2).",
+      "scope": "protected-file-v1", "status": "OPEN", "epistemic": "S", "evidence_class": "G-Omech",
+      "assumptions": ["C2", "C3"],
+      "evidence": {"artifacts": []},
+      "limitations": ["No formal verification or kernel-level assurance", "Trusted core is small (governor/*.py) but unproven"]
+    },
+    {
+      "id": "CLM-012",
+      "text": "Machine-checked typed refinement from the deployed policy to the admitted safety constitution (C4).",
+      "scope": "protected-file-v1", "status": "OPEN", "epistemic": "S", "evidence_class": "G-Omech",
+      "assumptions": ["C4"], "evidence": {"artifacts": []},
+      "limitations": ["Roadmap v0.3"]
+    },
+    {
+      "id": "CLM-013",
+      "text": "Capability delegation with attenuation (child scope, budget and expiry bounded by the parent).",
+      "scope": "protected-file-v1", "status": "OPEN", "epistemic": "S", "evidence_class": "G-Omech",
+      "assumptions": [], "evidence": {"families": ["F12"], "artifacts": ["governor/capability.py"]},
+      "limitations": ["Not implemented; capabilities naming a parent are rejected (tested), nothing more", "Roadmap v0.4"]
+    },
+    {
+      "id": "CLM-014",
+      "text": "Independent security review, external red-team validation and held-out adaptive evaluation.",
+      "scope": "protected-file-v1", "status": "OPEN", "epistemic": "E", "evidence_class": "G-Omech",
+      "assumptions": [], "evidence": {"artifacts": []},
+      "limitations": ["None performed; invitations to falsify are in SECURITY.md and AUDIT.md"]
+    },
+    {
+      "id": "CLM-015",
+      "text": "Conditional Behavioral Safety Theorem: under C1-C8 every executed protected effect satisfies the admitted safety predicate.",
+      "scope": "Paper section 1.3 / Table 1", "status": "SPECIFIED", "epistemic": "S", "evidence_class": "G-Omech",
+      "assumptions": ["C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8"],
+      "evidence": {"artifacts": ["research/paper.pdf", "research/SOURCE_MAP.md"]},
+      "limitations": ["Conditional on all eight conditions; this prototype demonstrates only a subset (see CLM-001..CLM-009 and CLM-010..CLM-012)"]
+    },
+    {
+      "id": "CLM-016",
+      "text": "L1 (public-ground component) and NRD (no unjustified normative difference), plus the constitutional-reflexivity constraint CR/CAR, as derived in the paper's practice-based ethics.",
+      "scope": "Paper sections 2-6", "status": "SPECIFIED", "epistemic": "D", "evidence_class": "n/a",
+      "assumptions": ["Paper premises P1 and following; classical first-order logic"],
+      "evidence": {"artifacts": ["research/paper.pdf"]},
+      "limitations": ["Derivations are not machine-checked (paper section 10.13)", "Substantive standards B4-B8 are declared (A), not derived", "This repository does not implement or test the philosophical layer"]
+    },
+    {
+      "id": "CLM-017",
+      "text": "Semantic assurance (G-Osem): calibrated probabilistic bounds on neural state extraction.",
+      "scope": "Not part of v0.1", "status": "NOT_APPLICABLE", "epistemic": "E", "evidence_class": "G-Osem",
+      "assumptions": ["SA (sensor adequacy)"], "evidence": {"artifacts": []},
+      "limitations": ["The v0.1 monitor is purely mechanical and makes no semantic judgments"]
+    },
+    {
+      "id": "CLM-018",
+      "text": "Covert channels, unmediated physical effects, compromised root of trust and operator-controlled disabling are outside the guarantee.",
+      "scope": "Paper section 10.15", "status": "RESIDUAL", "epistemic": "R", "evidence_class": "n/a",
+      "assumptions": [], "evidence": {"artifacts": ["LIMITATIONS.md"]},
+      "limitations": ["These are the boundary of the theorem, not defects of terminology"]
+    }
+  ]
+}

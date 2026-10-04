@@ -1,0 +1,16 @@
+[project]
+name = "glass-box-governor"
+version = "0.1.0"
+description = "Reference-monitor prototype (Protected File Mutation Profile v1) for The Dialectical Cage and the Glass-Box Governor."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Canon", email = "canon@necessaryuniverse.com" }]
+dependencies = []
+
+[project.urls]
+Homepage = "https://ai.necessaryuniverse.com"
+Repository = "https://github.com/canon4d/the-dialectical-cage-and-the-glass-box-governor"
+
+[tool.setuptools]
+packages = ["governor"]

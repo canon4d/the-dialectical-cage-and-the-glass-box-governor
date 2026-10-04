@@ -1,0 +1,14 @@
+{
+  "policy_version": "protected-file-v1.policy.1",
+  "default": "DENY",
+  "rules": [
+    { "principal": "agent-demo", "effect": "write_file", "resource": "record-a", "decision": "ALLOW" },
+    { "principal": "agent-demo", "effect": "delete_file", "resource": "record-a", "decision": "ALLOW" },
+    { "principal": "agent-demo", "effect": "write_file", "resource": "record-b", "decision": "ALLOW" },
+    { "principal": "agent-demo", "effect": "delete_file", "resource": "record-b", "decision": "ALLOW" },
+    { "principal": "agent-other", "effect": "write_file", "resource": "record-a", "decision": "ALLOW" },
+    { "principal": "agent-other", "effect": "delete_file", "resource": "record-a", "decision": "ALLOW" },
+    { "principal": "agent-observer", "effect": "write_file", "resource": "record-a", "decision": "DENY" },
+    { "principal": "agent-observer", "effect": "delete_file", "resource": "record-a", "decision": "DENY" }
+  ]
+}

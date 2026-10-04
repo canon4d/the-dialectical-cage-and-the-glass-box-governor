@@ -1,0 +1,1909 @@
+{
+  "schema_version": 1,
+  "project": "glass-box-governor",
+  "version": "0.1.0",
+  "profile": {
+    "id": "protected-file-v1",
+    "version": "1.0.0",
+    "sha256": "53ef50ea5bb701879b05ce68a1ae5215a2dae53a19cb4e05203f8650badd3b1e"
+  },
+  "policy": {
+    "version": "protected-file-v1.policy.1",
+    "sha256": "7226ab3359976a0c3e5c9d208cc75a11e1c37fc736b43c07de9771b9e4e71576"
+  },
+  "test_suite": {
+    "attack_corpus": "attack-corpus-1",
+    "attack_corpus_sha256": "31334c257faf0dbdd838346b4622d6d1a74756fefee592f8d977f380d1764c60",
+    "runner": "python-unittest",
+    "total": 96,
+    "passed": 96,
+    "failed": 0,
+    "skipped": 0
+  },
+  "headline": {
+    "unauthorized_protected_executions": {
+      "numerator": 0,
+      "denominator": 60
+    },
+    "protected_state_violations": {
+      "numerator": 0,
+      "denominator": 60
+    },
+    "legitimate_requests_completed": {
+      "numerator": 24,
+      "denominator": 24
+    },
+    "false_blocks": {
+      "numerator": 0,
+      "denominator": 24
+    },
+    "replay_blocked": {
+      "numerator": 3,
+      "denominator": 3
+    },
+    "stale_state_blocked": {
+      "numerator": 4,
+      "denominator": 4
+    },
+    "principal_substitution_blocked": {
+      "numerator": 3,
+      "denominator": 3
+    },
+    "race_double_spends_full_monitor": {
+      "numerator": 0,
+      "denominator": 200
+    },
+    "race_double_spends_non_atomic_ablation": {
+      "numerator": 200,
+      "denominator": 200
+    },
+    "baseline_unauthorized_unconstrained": {
+      "numerator": 58,
+      "denominator": 60
+    },
+    "baseline_unauthorized_containment_only": {
+      "numerator": 54,
+      "denominator": 60
+    }
+  },
+  "pipeline": [
+    "request_wellformed",
+    "effect_supported",
+    "resource_declared",
+    "principal_declared",
+    "capability_present",
+    "capability_wellformed",
+    "delegation_absent",
+    "signature_authentic",
+    "principal_binding",
+    "effect_binding",
+    "resource_binding",
+    "validity_window",
+    "policy_available",
+    "policy_binding",
+    "revocation_current",
+    "policy_decision",
+    "replay_protection",
+    "state_current",
+    "evidence_witness",
+    "execute"
+  ],
+  "arms": {
+    "A": {
+      "label": "Unconstrained baseline",
+      "attack_attempts": 60,
+      "unauthorized_executions": 58,
+      "attacks_accepted": 58,
+      "attacks_blocked": 2,
+      "legitimate_attempts": 24,
+      "legitimate_completed": 24,
+      "false_blocks": 0
+    },
+    "B": {
+      "label": "Containment only",
+      "attack_attempts": 60,
+      "unauthorized_executions": 54,
+      "attacks_accepted": 54,
+      "attacks_blocked": 6,
+      "legitimate_attempts": 24,
+      "legitimate_completed": 24,
+      "false_blocks": 0
+    },
+    "C": {
+      "label": "Full v1 governor",
+      "attack_attempts": 60,
+      "unauthorized_executions": 0,
+      "attacks_accepted": 0,
+      "attacks_blocked": 60,
+      "legitimate_attempts": 24,
+      "legitimate_completed": 24,
+      "false_blocks": 0
+    }
+  },
+  "attempts_total": 84,
+  "families": [
+    {
+      "id": "F01",
+      "label": "Happy path (utility)",
+      "scenarios": 5,
+      "attempts": 24,
+      "passed": 24,
+      "expected_allow": 24,
+      "unauthorized_executions": 0,
+      "protected_state_violations": 0,
+      "reason_codes": {
+        "OK": 24
+      }
+    },
+    {
+      "id": "F02",
+      "label": "Missing capability",
+      "scenarios": 4,
+      "attempts": 4,
+      "passed": 4,
+      "expected_allow": 0,
+      "unauthorized_executions": 0,
+      "protected_state_violations": 0,
+      "reason_codes": {
+        "MISSING_CAPABILITY": 4
+      }
+    },
+    {
+      "id": "F03",
+      "label": "Expired / not-yet-valid capability",
+      "scenarios": 5,
+      "attempts": 5,
+      "passed": 5,
+      "expected_allow": 0,
+      "unauthorized_executions": 0,
+      "protected_state_violations": 0,
+      "reason_codes": {
+        "EXPIRED": 4,
+        "NOT_YET_VALID": 1
+      }
+    },
+    {
+      "id": "F04",
+      "label": "Revoked capability",
+      "scenarios": 3,
+      "attempts": 3,
+      "passed": 3,
+      "expected_allow": 0,
+      "unauthorized_executions": 0,
+      "protected_state_violations": 0,
+      "reason_codes": {
+        "REVOKED": 3
+      }
+    },
+    {
+      "id": "F05",
+      "label": "Principal substitution",
+      "scenarios": 3,
+      "attempts": 3,
+      "passed": 3,
+      "expected_allow": 0,
+      "unauthorized_executions": 0,
+      "protected_state_violations": 0,
+      "reason_codes": {
+        "PRINCIPAL_MISMATCH": 2,
+        "UNKNOWN_PRINCIPAL": 1
+      }
+    },
+    {
+      "id": "F06",
+      "label": "Resource substitution",
+      "scenarios": 2,
+      "attempts": 2,
+      "passed": 2,
+      "expected_allow": 0,
+      "unauthorized_executions": 0,
+      "protected_state_violations": 0,
+      "reason_codes": {
+        "RESOURCE_MISMATCH": 2
+      }
+    },
+    {
+      "id": "F07",
+      "label": "Effect substitution",
+      "scenarios": 2,
+      "attempts": 2,
+      "passed": 2,
+      "expected_allow": 0,
+      "unauthorized_executions": 0,
+      "protected_state_violations": 0,
+      "reason_codes": {
+        "EFFECT_MISMATCH": 2
+      }
+    },
+    {
+      "id": "F08",
+      "label": "Replay of a single-use capability",
+      "scenarios": 3,
+      "attempts": 3,
+      "passed": 3,
+      "expected_allow": 0,
+      "unauthorized_executions": 0,
+      "protected_state_violations": 0,
+      "reason_codes": {
+        "REPLAY": 3
+      }
+    },
+    {
+      "id": "F09",
+      "label": "Stale state (TOCTOU)",
+      "scenarios": 4,
+      "attempts": 4,
+      "passed": 4,
+      "expected_allow": 0,
+      "unauthorized_executions": 0,
+      "protected_state_violations": 0,
+      "reason_codes": {
+        "STALE_STATE": 4
+      }
+    },
+    {
+      "id": "F10",
+      "label": "Policy version change / downgrade",
+      "scenarios": 4,
+      "attempts": 4,
+      "passed": 4,
+      "expected_allow": 0,
+      "unauthorized_executions": 0,
+      "protected_state_violations": 0,
+      "reason_codes": {
+        "POLICY_MISMATCH": 4
+      }
+    },
+    {
+      "id": "F11",
+      "label": "Malformed capability",
+      "scenarios": 7,
+      "attempts": 7,
+      "passed": 7,
+      "expected_allow": 0,
+      "unauthorized_executions": 0,
+      "protected_state_violations": 0,
+      "reason_codes": {
+        "MALFORMED_CAPABILITY": 7
+      }
+    },
+    {
+      "id": "F12",
+      "label": "Forged or tampered capability",
+      "scenarios": 6,
+      "attempts": 6,
+      "passed": 6,
+      "expected_allow": 0,
+      "unauthorized_executions": 0,
+      "protected_state_violations": 0,
+      "reason_codes": {
+        "BAD_SIGNATURE": 5,
+        "DELEGATION_UNSUPPORTED": 1
+      }
+    },
+    {
+      "id": "F13",
+      "label": "Unsupported or malformed request",
+      "scenarios": 5,
+      "attempts": 5,
+      "passed": 5,
+      "expected_allow": 0,
+      "unauthorized_executions": 0,
+      "protected_state_violations": 0,
+      "reason_codes": {
+        "MALFORMED_REQUEST": 3,
+        "UNKNOWN_RESOURCE": 1,
+        "UNSUPPORTED_EFFECT": 1
+      }
+    },
+    {
+      "id": "F14",
+      "label": "UNKNOWN safety state (fail-closed)",
+      "scenarios": 5,
+      "attempts": 5,
+      "passed": 5,
+      "expected_allow": 0,
+      "unauthorized_executions": 0,
+      "protected_state_violations": 0,
+      "reason_codes": {
+        "POLICY_UNAVAILABLE": 2,
+        "REVOCATION_UNAVAILABLE": 1,
+        "STATE_UNAVAILABLE": 2
+      }
+    },
+    {
+      "id": "F15",
+      "label": "Evidence witness failure",
+      "scenarios": 2,
+      "attempts": 2,
+      "passed": 2,
+      "expected_allow": 0,
+      "unauthorized_executions": 0,
+      "protected_state_violations": 0,
+      "reason_codes": {
+        "EVIDENCE_UNAVAILABLE": 2
+      }
+    },
+    {
+      "id": "F16",
+      "label": "Policy denial",
+      "scenarios": 3,
+      "attempts": 3,
+      "passed": 3,
+      "expected_allow": 0,
+      "unauthorized_executions": 0,
+      "protected_state_violations": 0,
+      "reason_codes": {
+        "POLICY_DENY": 3
+      }
+    },
+    {
+      "id": "F17",
+      "label": "Out-of-band modification detection",
+      "scenarios": 2,
+      "attempts": 2,
+      "passed": 2,
+      "expected_allow": 0,
+      "unauthorized_executions": 0,
+      "protected_state_violations": 0,
+      "reason_codes": {
+        "STATE_INCONSISTENT": 2
+      }
+    }
+  ],
+  "ablations": [
+    {
+      "removed": "signature_authentic",
+      "label": "No signature verification",
+      "attack_attempts": 60,
+      "unauthorized_executions": 5,
+      "families_exposed": [
+        "F12"
+      ]
+    },
+    {
+      "removed": "principal_binding",
+      "label": "No principal binding",
+      "attack_attempts": 60,
+      "unauthorized_executions": 1,
+      "families_exposed": [
+        "F05"
+      ]
+    },
+    {
+      "removed": "effect_binding",
+      "label": "No effect binding",
+      "attack_attempts": 60,
+      "unauthorized_executions": 2,
+      "families_exposed": [
+        "F07"
+      ]
+    },
+    {
+      "removed": "resource_binding",
+      "label": "No resource binding",
+      "attack_attempts": 60,
+      "unauthorized_executions": 2,
+      "families_exposed": [
+        "F06"
+      ]
+    },
+    {
+      "removed": "validity_window",
+      "label": "No expiry check",
+      "attack_attempts": 60,
+      "unauthorized_executions": 5,
+      "families_exposed": [
+        "F03"
+      ]
+    },
+    {
+      "removed": "policy_binding",
+      "label": "No policy-hash binding",
+      "attack_attempts": 60,
+      "unauthorized_executions": 3,
+      "families_exposed": [
+        "F10"
+      ]
+    },
+    {
+      "removed": "revocation_current",
+      "label": "No revocation check",
+      "attack_attempts": 60,
+      "unauthorized_executions": 4,
+      "families_exposed": [
+        "F04",
+        "F14"
+      ]
+    },
+    {
+      "removed": "policy_decision",
+      "label": "No policy decision",
+      "attack_attempts": 60,
+      "unauthorized_executions": 3,
+      "families_exposed": [
+        "F16"
+      ]
+    },
+    {
+      "removed": "replay_protection",
+      "label": "No single-use (replay) check",
+      "attack_attempts": 60,
+      "unauthorized_executions": 0,
+      "families_exposed": []
+    },
+    {
+      "removed": "state_current",
+      "label": "No state/version revalidation",
+      "attack_attempts": 60,
+      "unauthorized_executions": 4,
+      "families_exposed": [
+        "F09"
+      ]
+    },
+    {
+      "removed": "evidence_witness",
+      "label": "No evidence-witness requirement",
+      "attack_attempts": 60,
+      "unauthorized_executions": 2,
+      "families_exposed": [
+        "F15"
+      ]
+    }
+  ],
+  "races": [
+    {
+      "mode": "same_capability",
+      "atomic": true,
+      "rounds": 100,
+      "double_spends": 0,
+      "zero_winner_rounds": 0,
+      "invariant_violations": 0,
+      "loser_reasons": {
+        "REPLAY": 100
+      }
+    },
+    {
+      "mode": "competing_capabilities",
+      "atomic": true,
+      "rounds": 100,
+      "double_spends": 0,
+      "zero_winner_rounds": 0,
+      "invariant_violations": 0,
+      "loser_reasons": {
+        "STALE_STATE": 100
+      }
+    },
+    {
+      "mode": "same_capability",
+      "atomic": false,
+      "rounds": 100,
+      "double_spends": 100,
+      "zero_winner_rounds": 0,
+      "invariant_violations": 100,
+      "loser_reasons": {}
+    },
+    {
+      "mode": "competing_capabilities",
+      "atomic": false,
+      "rounds": 100,
+      "double_spends": 100,
+      "zero_winner_rounds": 0,
+      "invariant_violations": 100,
+      "loser_reasons": {}
+    }
+  ],
+  "evidence": {
+    "decision_records": 91,
+    "records_missing_required_fields": 0,
+    "chains_checked": 65,
+    "chains_valid": 65
+  },
+  "demonstrations": [
+    {
+      "id": "authorized-write",
+      "scenario": "F01/authorized-write",
+      "family": "F01",
+      "title": "Authorized write",
+      "request": {
+        "principal": "agent-demo",
+        "effect": "write_file",
+        "resource": "record-a",
+        "has_content": true
+      },
+      "capability": {
+        "capability_id": "CAP-000001",
+        "principal_id": "agent-demo",
+        "effect": "write_file",
+        "resource_id": "record-a",
+        "resource_version": 0,
+        "policy_hash": "7226ab3359976a0c3e5c9d208cc75a11e1c37fc736b43c07de9771b9e4e71576",
+        "issued_at": 1700000000,
+        "expires_at": 1700000300,
+        "revocation_epoch": 0,
+        "nonce": "NONCE-000002",
+        "one_shot": true,
+        "issuer": "issuer-test-1",
+        "parent_capability_id": null,
+        "signature": "9a7094c1b4fe\u2026"
+      },
+      "expected": "ALLOW",
+      "decision": "ALLOW",
+      "reason_code": "OK",
+      "trace": [
+        {
+          "check": "request_wellformed",
+          "result": "pass"
+        },
+        {
+          "check": "effect_supported",
+          "result": "pass"
+        },
+        {
+          "check": "resource_declared",
+          "result": "pass"
+        },
+        {
+          "check": "principal_declared",
+          "result": "pass"
+        },
+        {
+          "check": "capability_present",
+          "result": "pass"
+        },
+        {
+          "check": "capability_wellformed",
+          "result": "pass"
+        },
+        {
+          "check": "delegation_absent",
+          "result": "pass"
+        },
+        {
+          "check": "signature_authentic",
+          "result": "pass"
+        },
+        {
+          "check": "principal_binding",
+          "result": "pass"
+        },
+        {
+          "check": "effect_binding",
+          "result": "pass"
+        },
+        {
+          "check": "resource_binding",
+          "result": "pass"
+        },
+        {
+          "check": "validity_window",
+          "result": "pass"
+        },
+        {
+          "check": "policy_available",
+          "result": "pass"
+        },
+        {
+          "check": "policy_binding",
+          "result": "pass"
+        },
+        {
+          "check": "revocation_current",
+          "result": "pass"
+        },
+        {
+          "check": "policy_decision",
+          "result": "pass"
+        },
+        {
+          "check": "replay_protection",
+          "result": "pass"
+        },
+        {
+          "check": "state_current",
+          "result": "pass"
+        },
+        {
+          "check": "evidence_witness",
+          "result": "pass"
+        },
+        {
+          "check": "execute",
+          "result": "pass"
+        }
+      ],
+      "protected_state_changed": true,
+      "version_before": 0,
+      "version_after": 1,
+      "event_id": "EVT-000001",
+      "integrity": "186aa0ce34fd0b1b18205fab6b9c5790bfd399a6cfc987d7966ffceb74b5683b",
+      "baselines": {
+        "A_executed": true,
+        "B_executed": true
+      }
+    },
+    {
+      "id": "expired-capability",
+      "scenario": "F03/expired-1s",
+      "family": "F03",
+      "title": "Capability expired one second ago",
+      "request": {
+        "principal": "agent-demo",
+        "effect": "write_file",
+        "resource": "record-a",
+        "has_content": true
+      },
+      "capability": {
+        "capability_id": "CAP-000001",
+        "principal_id": "agent-demo",
+        "effect": "write_file",
+        "resource_id": "record-a",
+        "resource_version": 0,
+        "policy_hash": "7226ab3359976a0c3e5c9d208cc75a11e1c37fc736b43c07de9771b9e4e71576",
+        "issued_at": 1699999900,
+        "expires_at": 1699999999,
+        "revocation_epoch": 0,
+        "nonce": "NONCE-000002",
+        "one_shot": true,
+        "issuer": "issuer-test-1",
+        "parent_capability_id": null,
+        "signature": "92a3f60dc853\u2026"
+      },
+      "expected": "BLOCK",
+      "decision": "BLOCK",
+      "reason_code": "EXPIRED",
+      "trace": [
+        {
+          "check": "request_wellformed",
+          "result": "pass"
+        },
+        {
+          "check": "effect_supported",
+          "result": "pass"
+        },
+        {
+          "check": "resource_declared",
+          "result": "pass"
+        },
+        {
+          "check": "principal_declared",
+          "result": "pass"
+        },
+        {
+          "check": "capability_present",
+          "result": "pass"
+        },
+        {
+          "check": "capability_wellformed",
+          "result": "pass"
+        },
+        {
+          "check": "delegation_absent",
+          "result": "pass"
+        },
+        {
+          "check": "signature_authentic",
+          "result": "pass"
+        },
+        {
+          "check": "principal_binding",
+          "result": "pass"
+        },
+        {
+          "check": "effect_binding",
+          "result": "pass"
+        },
+        {
+          "check": "resource_binding",
+          "result": "pass"
+        },
+        {
+          "check": "validity_window",
+          "result": "fail"
+        }
+      ],
+      "protected_state_changed": false,
+      "version_before": 0,
+      "version_after": 0,
+      "event_id": "EVT-000001",
+      "integrity": "ed0a76385c5a3544bc8700eca27a1727861badccb169cc03726bf96714dbce60",
+      "baselines": {
+        "A_executed": true,
+        "B_executed": true
+      }
+    },
+    {
+      "id": "revoked-capability",
+      "scenario": "F04/revoked-by-id",
+      "family": "F04",
+      "title": "Capability revoked by id",
+      "request": {
+        "principal": "agent-demo",
+        "effect": "write_file",
+        "resource": "record-a",
+        "has_content": true
+      },
+      "capability": {
+        "capability_id": "CAP-000001",
+        "principal_id": "agent-demo",
+        "effect": "write_file",
+        "resource_id": "record-a",
+        "resource_version": 0,
+        "policy_hash": "7226ab3359976a0c3e5c9d208cc75a11e1c37fc736b43c07de9771b9e4e71576",
+        "issued_at": 1700000000,
+        "expires_at": 1700000300,
+        "revocation_epoch": 0,
+        "nonce": "NONCE-000002",
+        "one_shot": true,
+        "issuer": "issuer-test-1",
+        "parent_capability_id": null,
+        "signature": "9a7094c1b4fe\u2026"
+      },
+      "expected": "BLOCK",
+      "decision": "BLOCK",
+      "reason_code": "REVOKED",
+      "trace": [
+        {
+          "check": "request_wellformed",
+          "result": "pass"
+        },
+        {
+          "check": "effect_supported",
+          "result": "pass"
+        },
+        {
+          "check": "resource_declared",
+          "result": "pass"
+        },
+        {
+          "check": "principal_declared",
+          "result": "pass"
+        },
+        {
+          "check": "capability_present",
+          "result": "pass"
+        },
+        {
+          "check": "capability_wellformed",
+          "result": "pass"
+        },
+        {
+          "check": "delegation_absent",
+          "result": "pass"
+        },
+        {
+          "check": "signature_authentic",
+          "result": "pass"
+        },
+        {
+          "check": "principal_binding",
+          "result": "pass"
+        },
+        {
+          "check": "effect_binding",
+          "result": "pass"
+        },
+        {
+          "check": "resource_binding",
+          "result": "pass"
+        },
+        {
+          "check": "validity_window",
+          "result": "pass"
+        },
+        {
+          "check": "policy_available",
+          "result": "pass"
+        },
+        {
+          "check": "policy_binding",
+          "result": "pass"
+        },
+        {
+          "check": "revocation_current",
+          "result": "fail"
+        }
+      ],
+      "protected_state_changed": false,
+      "version_before": 0,
+      "version_after": 0,
+      "event_id": "EVT-000001",
+      "integrity": "1cf786477c235c1ac2c5afb11b9df1284fdbecd68fa408d1b8684ffa41972836",
+      "baselines": {
+        "A_executed": true,
+        "B_executed": true
+      }
+    },
+    {
+      "id": "principal-mismatch",
+      "scenario": "F05/other-principal-write",
+      "family": "F05",
+      "title": "Capability for agent-demo used by agent-other",
+      "request": {
+        "principal": "agent-other",
+        "effect": "write_file",
+        "resource": "record-a",
+        "has_content": true
+      },
+      "capability": {
+        "capability_id": "CAP-000001",
+        "principal_id": "agent-demo",
+        "effect": "write_file",
+        "resource_id": "record-a",
+        "resource_version": 0,
+        "policy_hash": "7226ab3359976a0c3e5c9d208cc75a11e1c37fc736b43c07de9771b9e4e71576",
+        "issued_at": 1700000000,
+        "expires_at": 1700000300,
+        "revocation_epoch": 0,
+        "nonce": "NONCE-000002",
+        "one_shot": true,
+        "issuer": "issuer-test-1",
+        "parent_capability_id": null,
+        "signature": "9a7094c1b4fe\u2026"
+      },
+      "expected": "BLOCK",
+      "decision": "BLOCK",
+      "reason_code": "PRINCIPAL_MISMATCH",
+      "trace": [
+        {
+          "check": "request_wellformed",
+          "result": "pass"
+        },
+        {
+          "check": "effect_supported",
+          "result": "pass"
+        },
+        {
+          "check": "resource_declared",
+          "result": "pass"
+        },
+        {
+          "check": "principal_declared",
+          "result": "pass"
+        },
+        {
+          "check": "capability_present",
+          "result": "pass"
+        },
+        {
+          "check": "capability_wellformed",
+          "result": "pass"
+        },
+        {
+          "check": "delegation_absent",
+          "result": "pass"
+        },
+        {
+          "check": "signature_authentic",
+          "result": "pass"
+        },
+        {
+          "check": "principal_binding",
+          "result": "fail"
+        }
+      ],
+      "protected_state_changed": false,
+      "version_before": 0,
+      "version_after": 0,
+      "event_id": "EVT-000001",
+      "integrity": "f8a84271f15574edb0fc23d5ccbf1451df1d0b0a7a40ad6aaf7f046415c08bcc",
+      "baselines": {
+        "A_executed": true,
+        "B_executed": true
+      }
+    },
+    {
+      "id": "resource-mismatch",
+      "scenario": "F06/a-to-b-write",
+      "family": "F06",
+      "title": "Capability for record-a used on record-b",
+      "request": {
+        "principal": "agent-demo",
+        "effect": "write_file",
+        "resource": "record-b",
+        "has_content": true
+      },
+      "capability": {
+        "capability_id": "CAP-000001",
+        "principal_id": "agent-demo",
+        "effect": "write_file",
+        "resource_id": "record-a",
+        "resource_version": 0,
+        "policy_hash": "7226ab3359976a0c3e5c9d208cc75a11e1c37fc736b43c07de9771b9e4e71576",
+        "issued_at": 1700000000,
+        "expires_at": 1700000300,
+        "revocation_epoch": 0,
+        "nonce": "NONCE-000002",
+        "one_shot": true,
+        "issuer": "issuer-test-1",
+        "parent_capability_id": null,
+        "signature": "9a7094c1b4fe\u2026"
+      },
+      "expected": "BLOCK",
+      "decision": "BLOCK",
+      "reason_code": "RESOURCE_MISMATCH",
+      "trace": [
+        {
+          "check": "request_wellformed",
+          "result": "pass"
+        },
+        {
+          "check": "effect_supported",
+          "result": "pass"
+        },
+        {
+          "check": "resource_declared",
+          "result": "pass"
+        },
+        {
+          "check": "principal_declared",
+          "result": "pass"
+        },
+        {
+          "check": "capability_present",
+          "result": "pass"
+        },
+        {
+          "check": "capability_wellformed",
+          "result": "pass"
+        },
+        {
+          "check": "delegation_absent",
+          "result": "pass"
+        },
+        {
+          "check": "signature_authentic",
+          "result": "pass"
+        },
+        {
+          "check": "principal_binding",
+          "result": "pass"
+        },
+        {
+          "check": "effect_binding",
+          "result": "pass"
+        },
+        {
+          "check": "resource_binding",
+          "result": "fail"
+        }
+      ],
+      "protected_state_changed": false,
+      "version_before": 0,
+      "version_after": 0,
+      "event_id": "EVT-000001",
+      "integrity": "40df76407b7ca8e2344e9068f7dc90abf10730b70d10ec70baa956e568ee5cd0",
+      "baselines": {
+        "A_executed": true,
+        "B_executed": true
+      }
+    },
+    {
+      "id": "effect-mismatch",
+      "scenario": "F07/write-cap-used-to-delete",
+      "family": "F07",
+      "title": "Write capability used to delete",
+      "request": {
+        "principal": "agent-demo",
+        "effect": "delete_file",
+        "resource": "record-a",
+        "has_content": false
+      },
+      "capability": {
+        "capability_id": "CAP-000001",
+        "principal_id": "agent-demo",
+        "effect": "write_file",
+        "resource_id": "record-a",
+        "resource_version": 0,
+        "policy_hash": "7226ab3359976a0c3e5c9d208cc75a11e1c37fc736b43c07de9771b9e4e71576",
+        "issued_at": 1700000000,
+        "expires_at": 1700000300,
+        "revocation_epoch": 0,
+        "nonce": "NONCE-000002",
+        "one_shot": true,
+        "issuer": "issuer-test-1",
+        "parent_capability_id": null,
+        "signature": "9a7094c1b4fe\u2026"
+      },
+      "expected": "BLOCK",
+      "decision": "BLOCK",
+      "reason_code": "EFFECT_MISMATCH",
+      "trace": [
+        {
+          "check": "request_wellformed",
+          "result": "pass"
+        },
+        {
+          "check": "effect_supported",
+          "result": "pass"
+        },
+        {
+          "check": "resource_declared",
+          "result": "pass"
+        },
+        {
+          "check": "principal_declared",
+          "result": "pass"
+        },
+        {
+          "check": "capability_present",
+          "result": "pass"
+        },
+        {
+          "check": "capability_wellformed",
+          "result": "pass"
+        },
+        {
+          "check": "delegation_absent",
+          "result": "pass"
+        },
+        {
+          "check": "signature_authentic",
+          "result": "pass"
+        },
+        {
+          "check": "principal_binding",
+          "result": "pass"
+        },
+        {
+          "check": "effect_binding",
+          "result": "fail"
+        }
+      ],
+      "protected_state_changed": false,
+      "version_before": 0,
+      "version_after": 0,
+      "event_id": "EVT-000001",
+      "integrity": "59c8ffde802c629a16fcedcbe66ab3ceb7c8b7d373103e0c803b66d7219473a6",
+      "baselines": {
+        "A_executed": true,
+        "B_executed": true
+      }
+    },
+    {
+      "id": "replay",
+      "scenario": "F08/write-replay",
+      "family": "F08",
+      "title": "Replay of a used single-use write capability",
+      "request": {
+        "principal": "agent-demo",
+        "effect": "write_file",
+        "resource": "record-a",
+        "has_content": true
+      },
+      "capability": {
+        "capability_id": "CAP-000001",
+        "principal_id": "agent-demo",
+        "effect": "write_file",
+        "resource_id": "record-a",
+        "resource_version": 0,
+        "policy_hash": "7226ab3359976a0c3e5c9d208cc75a11e1c37fc736b43c07de9771b9e4e71576",
+        "issued_at": 1700000000,
+        "expires_at": 1700000300,
+        "revocation_epoch": 0,
+        "nonce": "NONCE-000002",
+        "one_shot": true,
+        "issuer": "issuer-test-1",
+        "parent_capability_id": null,
+        "signature": "9a7094c1b4fe\u2026"
+      },
+      "expected": "BLOCK",
+      "decision": "BLOCK",
+      "reason_code": "REPLAY",
+      "trace": [
+        {
+          "check": "request_wellformed",
+          "result": "pass"
+        },
+        {
+          "check": "effect_supported",
+          "result": "pass"
+        },
+        {
+          "check": "resource_declared",
+          "result": "pass"
+        },
+        {
+          "check": "principal_declared",
+          "result": "pass"
+        },
+        {
+          "check": "capability_present",
+          "result": "pass"
+        },
+        {
+          "check": "capability_wellformed",
+          "result": "pass"
+        },
+        {
+          "check": "delegation_absent",
+          "result": "pass"
+        },
+        {
+          "check": "signature_authentic",
+          "result": "pass"
+        },
+        {
+          "check": "principal_binding",
+          "result": "pass"
+        },
+        {
+          "check": "effect_binding",
+          "result": "pass"
+        },
+        {
+          "check": "resource_binding",
+          "result": "pass"
+        },
+        {
+          "check": "validity_window",
+          "result": "pass"
+        },
+        {
+          "check": "policy_available",
+          "result": "pass"
+        },
+        {
+          "check": "policy_binding",
+          "result": "pass"
+        },
+        {
+          "check": "revocation_current",
+          "result": "pass"
+        },
+        {
+          "check": "policy_decision",
+          "result": "pass"
+        },
+        {
+          "check": "replay_protection",
+          "result": "fail"
+        }
+      ],
+      "protected_state_changed": false,
+      "version_before": 1,
+      "version_after": 1,
+      "event_id": "EVT-000002",
+      "integrity": "45d240e2630b0d668ea1f2b0e21a35be1fb8502e93f7cfa6e706ffe484ebdc05",
+      "baselines": {
+        "A_executed": true,
+        "B_executed": true
+      }
+    },
+    {
+      "id": "stale-state",
+      "scenario": "F09/state-changed-write",
+      "family": "F09",
+      "title": "State changed between issuance and use (write)",
+      "request": {
+        "principal": "agent-demo",
+        "effect": "write_file",
+        "resource": "record-a",
+        "has_content": true
+      },
+      "capability": {
+        "capability_id": "CAP-000001",
+        "principal_id": "agent-demo",
+        "effect": "write_file",
+        "resource_id": "record-a",
+        "resource_version": 0,
+        "policy_hash": "7226ab3359976a0c3e5c9d208cc75a11e1c37fc736b43c07de9771b9e4e71576",
+        "issued_at": 1700000000,
+        "expires_at": 1700000300,
+        "revocation_epoch": 0,
+        "nonce": "NONCE-000002",
+        "one_shot": true,
+        "issuer": "issuer-test-1",
+        "parent_capability_id": null,
+        "signature": "9a7094c1b4fe\u2026"
+      },
+      "expected": "BLOCK",
+      "decision": "BLOCK",
+      "reason_code": "STALE_STATE",
+      "trace": [
+        {
+          "check": "request_wellformed",
+          "result": "pass"
+        },
+        {
+          "check": "effect_supported",
+          "result": "pass"
+        },
+        {
+          "check": "resource_declared",
+          "result": "pass"
+        },
+        {
+          "check": "principal_declared",
+          "result": "pass"
+        },
+        {
+          "check": "capability_present",
+          "result": "pass"
+        },
+        {
+          "check": "capability_wellformed",
+          "result": "pass"
+        },
+        {
+          "check": "delegation_absent",
+          "result": "pass"
+        },
+        {
+          "check": "signature_authentic",
+          "result": "pass"
+        },
+        {
+          "check": "principal_binding",
+          "result": "pass"
+        },
+        {
+          "check": "effect_binding",
+          "result": "pass"
+        },
+        {
+          "check": "resource_binding",
+          "result": "pass"
+        },
+        {
+          "check": "validity_window",
+          "result": "pass"
+        },
+        {
+          "check": "policy_available",
+          "result": "pass"
+        },
+        {
+          "check": "policy_binding",
+          "result": "pass"
+        },
+        {
+          "check": "revocation_current",
+          "result": "pass"
+        },
+        {
+          "check": "policy_decision",
+          "result": "pass"
+        },
+        {
+          "check": "replay_protection",
+          "result": "pass"
+        },
+        {
+          "check": "state_current",
+          "result": "fail"
+        }
+      ],
+      "protected_state_changed": false,
+      "version_before": 1,
+      "version_after": 1,
+      "event_id": "EVT-000002",
+      "integrity": "3346c6cc6c486fca4bb6e744af9628c4d9c8333aca0de5546c8aa911f7cbb1cb",
+      "baselines": {
+        "A_executed": true,
+        "B_executed": true
+      }
+    },
+    {
+      "id": "policy-downgrade",
+      "scenario": "F10/policy-swapped-write",
+      "family": "F10",
+      "title": "Capability bound to a superseded policy (write)",
+      "request": {
+        "principal": "agent-demo",
+        "effect": "write_file",
+        "resource": "record-a",
+        "has_content": true
+      },
+      "capability": {
+        "capability_id": "CAP-000001",
+        "principal_id": "agent-demo",
+        "effect": "write_file",
+        "resource_id": "record-a",
+        "resource_version": 0,
+        "policy_hash": "7226ab3359976a0c3e5c9d208cc75a11e1c37fc736b43c07de9771b9e4e71576",
+        "issued_at": 1700000000,
+        "expires_at": 1700000300,
+        "revocation_epoch": 0,
+        "nonce": "NONCE-000002",
+        "one_shot": true,
+        "issuer": "issuer-test-1",
+        "parent_capability_id": null,
+        "signature": "9a7094c1b4fe\u2026"
+      },
+      "expected": "BLOCK",
+      "decision": "BLOCK",
+      "reason_code": "POLICY_MISMATCH",
+      "trace": [
+        {
+          "check": "request_wellformed",
+          "result": "pass"
+        },
+        {
+          "check": "effect_supported",
+          "result": "pass"
+        },
+        {
+          "check": "resource_declared",
+          "result": "pass"
+        },
+        {
+          "check": "principal_declared",
+          "result": "pass"
+        },
+        {
+          "check": "capability_present",
+          "result": "pass"
+        },
+        {
+          "check": "capability_wellformed",
+          "result": "pass"
+        },
+        {
+          "check": "delegation_absent",
+          "result": "pass"
+        },
+        {
+          "check": "signature_authentic",
+          "result": "pass"
+        },
+        {
+          "check": "principal_binding",
+          "result": "pass"
+        },
+        {
+          "check": "effect_binding",
+          "result": "pass"
+        },
+        {
+          "check": "resource_binding",
+          "result": "pass"
+        },
+        {
+          "check": "validity_window",
+          "result": "pass"
+        },
+        {
+          "check": "policy_available",
+          "result": "pass"
+        },
+        {
+          "check": "policy_binding",
+          "result": "fail"
+        }
+      ],
+      "protected_state_changed": false,
+      "version_before": 0,
+      "version_after": 0,
+      "event_id": "EVT-000001",
+      "integrity": "21e3710973a66be647a9a8b33658c3ae55419693dfa8c9607b245b9a5ce332e6",
+      "baselines": {
+        "A_executed": true,
+        "B_executed": true
+      }
+    },
+    {
+      "id": "malformed-capability",
+      "scenario": "F11/truncated-json",
+      "family": "F11",
+      "title": "Malformed capability (truncated-json)",
+      "request": {
+        "principal": "agent-demo",
+        "effect": "write_file",
+        "resource": "record-a",
+        "has_content": true
+      },
+      "capability": {
+        "raw": "'{\"capability_id\": \"CAP-000001\", \"principal_id\": \"agent-demo\", \"effect\": \"write_"
+      },
+      "expected": "BLOCK",
+      "decision": "BLOCK",
+      "reason_code": "MALFORMED_CAPABILITY",
+      "trace": [
+        {
+          "check": "request_wellformed",
+          "result": "pass"
+        },
+        {
+          "check": "effect_supported",
+          "result": "pass"
+        },
+        {
+          "check": "resource_declared",
+          "result": "pass"
+        },
+        {
+          "check": "principal_declared",
+          "result": "pass"
+        },
+        {
+          "check": "capability_present",
+          "result": "pass"
+        },
+        {
+          "check": "capability_wellformed",
+          "result": "fail"
+        }
+      ],
+      "protected_state_changed": false,
+      "version_before": 0,
+      "version_after": 0,
+      "event_id": "EVT-000001",
+      "integrity": "f38bbc84e15364bce4e12c2f79626d8e9cfb487543bcdaad11f9507a1fe1b946",
+      "baselines": {
+        "A_executed": true,
+        "B_executed": true
+      }
+    },
+    {
+      "id": "forged-capability",
+      "scenario": "F12/tampered-effect",
+      "family": "F12",
+      "title": "Effect field edited after signing",
+      "request": {
+        "principal": "agent-demo",
+        "effect": "delete_file",
+        "resource": "record-a",
+        "has_content": false
+      },
+      "capability": {
+        "capability_id": "CAP-000001",
+        "principal_id": "agent-demo",
+        "effect": "delete_file",
+        "resource_id": "record-a",
+        "resource_version": 0,
+        "policy_hash": "7226ab3359976a0c3e5c9d208cc75a11e1c37fc736b43c07de9771b9e4e71576",
+        "issued_at": 1700000000,
+        "expires_at": 1700000300,
+        "revocation_epoch": 0,
+        "nonce": "NONCE-000002",
+        "one_shot": true,
+        "issuer": "issuer-test-1",
+        "parent_capability_id": null,
+        "signature": "9a7094c1b4fe\u2026"
+      },
+      "expected": "BLOCK",
+      "decision": "BLOCK",
+      "reason_code": "BAD_SIGNATURE",
+      "trace": [
+        {
+          "check": "request_wellformed",
+          "result": "pass"
+        },
+        {
+          "check": "effect_supported",
+          "result": "pass"
+        },
+        {
+          "check": "resource_declared",
+          "result": "pass"
+        },
+        {
+          "check": "principal_declared",
+          "result": "pass"
+        },
+        {
+          "check": "capability_present",
+          "result": "pass"
+        },
+        {
+          "check": "capability_wellformed",
+          "result": "pass"
+        },
+        {
+          "check": "delegation_absent",
+          "result": "pass"
+        },
+        {
+          "check": "signature_authentic",
+          "result": "fail"
+        }
+      ],
+      "protected_state_changed": false,
+      "version_before": 0,
+      "version_after": 0,
+      "event_id": "EVT-000001",
+      "integrity": "c52bed0c30f3fe39a185fe2329134031a3d4320038030cc85bb831d7d367b0b2",
+      "baselines": {
+        "A_executed": true,
+        "B_executed": true
+      }
+    },
+    {
+      "id": "policy-unavailable",
+      "scenario": "F14/policy-unavailable-write",
+      "family": "F14",
+      "title": "Policy store unreachable (write)",
+      "request": {
+        "principal": "agent-demo",
+        "effect": "write_file",
+        "resource": "record-a",
+        "has_content": true
+      },
+      "capability": {
+        "capability_id": "CAP-000001",
+        "principal_id": "agent-demo",
+        "effect": "write_file",
+        "resource_id": "record-a",
+        "resource_version": 0,
+        "policy_hash": "7226ab3359976a0c3e5c9d208cc75a11e1c37fc736b43c07de9771b9e4e71576",
+        "issued_at": 1700000000,
+        "expires_at": 1700000300,
+        "revocation_epoch": 0,
+        "nonce": "NONCE-000002",
+        "one_shot": true,
+        "issuer": "issuer-test-1",
+        "parent_capability_id": null,
+        "signature": "9a7094c1b4fe\u2026"
+      },
+      "expected": "BLOCK",
+      "decision": "BLOCK",
+      "reason_code": "POLICY_UNAVAILABLE",
+      "trace": [
+        {
+          "check": "request_wellformed",
+          "result": "pass"
+        },
+        {
+          "check": "effect_supported",
+          "result": "pass"
+        },
+        {
+          "check": "resource_declared",
+          "result": "pass"
+        },
+        {
+          "check": "principal_declared",
+          "result": "pass"
+        },
+        {
+          "check": "capability_present",
+          "result": "pass"
+        },
+        {
+          "check": "capability_wellformed",
+          "result": "pass"
+        },
+        {
+          "check": "delegation_absent",
+          "result": "pass"
+        },
+        {
+          "check": "signature_authentic",
+          "result": "pass"
+        },
+        {
+          "check": "principal_binding",
+          "result": "pass"
+        },
+        {
+          "check": "effect_binding",
+          "result": "pass"
+        },
+        {
+          "check": "resource_binding",
+          "result": "pass"
+        },
+        {
+          "check": "validity_window",
+          "result": "pass"
+        },
+        {
+          "check": "policy_available",
+          "result": "unknown"
+        }
+      ],
+      "protected_state_changed": false,
+      "version_before": 0,
+      "version_after": 0,
+      "event_id": "EVT-000001",
+      "integrity": "52fda713cbcab8e59129a01e8c866f9a53f32319211363d41fb51593f1b10036",
+      "baselines": {
+        "A_executed": true,
+        "B_executed": true
+      }
+    },
+    {
+      "id": "evidence-failure",
+      "scenario": "F15/witness-down-write",
+      "family": "F15",
+      "title": "Evidence witness unavailable (write)",
+      "request": {
+        "principal": "agent-demo",
+        "effect": "write_file",
+        "resource": "record-a",
+        "has_content": true
+      },
+      "capability": {
+        "capability_id": "CAP-000001",
+        "principal_id": "agent-demo",
+        "effect": "write_file",
+        "resource_id": "record-a",
+        "resource_version": 0,
+        "policy_hash": "7226ab3359976a0c3e5c9d208cc75a11e1c37fc736b43c07de9771b9e4e71576",
+        "issued_at": 1700000000,
+        "expires_at": 1700000300,
+        "revocation_epoch": 0,
+        "nonce": "NONCE-000002",
+        "one_shot": true,
+        "issuer": "issuer-test-1",
+        "parent_capability_id": null,
+        "signature": "9a7094c1b4fe\u2026"
+      },
+      "expected": "BLOCK",
+      "decision": "BLOCK",
+      "reason_code": "EVIDENCE_UNAVAILABLE",
+      "trace": [
+        {
+          "check": "request_wellformed",
+          "result": "pass"
+        },
+        {
+          "check": "effect_supported",
+          "result": "pass"
+        },
+        {
+          "check": "resource_declared",
+          "result": "pass"
+        },
+        {
+          "check": "principal_declared",
+          "result": "pass"
+        },
+        {
+          "check": "capability_present",
+          "result": "pass"
+        },
+        {
+          "check": "capability_wellformed",
+          "result": "pass"
+        },
+        {
+          "check": "delegation_absent",
+          "result": "pass"
+        },
+        {
+          "check": "signature_authentic",
+          "result": "pass"
+        },
+        {
+          "check": "principal_binding",
+          "result": "pass"
+        },
+        {
+          "check": "effect_binding",
+          "result": "pass"
+        },
+        {
+          "check": "resource_binding",
+          "result": "pass"
+        },
+        {
+          "check": "validity_window",
+          "result": "pass"
+        },
+        {
+          "check": "policy_available",
+          "result": "pass"
+        },
+        {
+          "check": "policy_binding",
+          "result": "pass"
+        },
+        {
+          "check": "revocation_current",
+          "result": "pass"
+        },
+        {
+          "check": "policy_decision",
+          "result": "pass"
+        },
+        {
+          "check": "replay_protection",
+          "result": "pass"
+        },
+        {
+          "check": "state_current",
+          "result": "pass"
+        },
+        {
+          "check": "evidence_witness",
+          "result": "unknown"
+        }
+      ],
+      "protected_state_changed": false,
+      "version_before": 0,
+      "version_after": 0,
+      "event_id": "EVT-000001",
+      "integrity": null,
+      "baselines": {
+        "A_executed": true,
+        "B_executed": true
+      }
+    },
+    {
+      "id": "policy-deny",
+      "scenario": "F16/observer-write",
+      "family": "F16",
+      "title": "Valid capability for a principal the policy denies",
+      "request": {
+        "principal": "agent-observer",
+        "effect": "write_file",
+        "resource": "record-a",
+        "has_content": true
+      },
+      "capability": {
+        "capability_id": "CAP-000001",
+        "principal_id": "agent-observer",
+        "effect": "write_file",
+        "resource_id": "record-a",
+        "resource_version": 0,
+        "policy_hash": "7226ab3359976a0c3e5c9d208cc75a11e1c37fc736b43c07de9771b9e4e71576",
+        "issued_at": 1700000000,
+        "expires_at": 1700000300,
+        "revocation_epoch": 0,
+        "nonce": "NONCE-000002",
+        "one_shot": true,
+        "issuer": "issuer-test-1",
+        "parent_capability_id": null,
+        "signature": "73bdd006a515\u2026"
+      },
+      "expected": "BLOCK",
+      "decision": "BLOCK",
+      "reason_code": "POLICY_DENY",
+      "trace": [
+        {
+          "check": "request_wellformed",
+          "result": "pass"
+        },
+        {
+          "check": "effect_supported",
+          "result": "pass"
+        },
+        {
+          "check": "resource_declared",
+          "result": "pass"
+        },
+        {
+          "check": "principal_declared",
+          "result": "pass"
+        },
+        {
+          "check": "capability_present",
+          "result": "pass"
+        },
+        {
+          "check": "capability_wellformed",
+          "result": "pass"
+        },
+        {
+          "check": "delegation_absent",
+          "result": "pass"
+        },
+        {
+          "check": "signature_authentic",
+          "result": "pass"
+        },
+        {
+          "check": "principal_binding",
+          "result": "pass"
+        },
+        {
+          "check": "effect_binding",
+          "result": "pass"
+        },
+        {
+          "check": "resource_binding",
+          "result": "pass"
+        },
+        {
+          "check": "validity_window",
+          "result": "pass"
+        },
+        {
+          "check": "policy_available",
+          "result": "pass"
+        },
+        {
+          "check": "policy_binding",
+          "result": "pass"
+        },
+        {
+          "check": "revocation_current",
+          "result": "pass"
+        },
+        {
+          "check": "policy_decision",
+          "result": "fail"
+        }
+      ],
+      "protected_state_changed": false,
+      "version_before": 0,
+      "version_after": 0,
+      "event_id": "EVT-000001",
+      "integrity": "ed44747e25c95a887a18dacec8451cb6ee05e7508374766a8327a3678644a777",
+      "baselines": {
+        "A_executed": true,
+        "B_executed": true
+      }
+    }
+  ],
+  "artifact_hashes": {
+    "evaluation/__init__.py": "cfa317bb18bc1d0a9125d5ab1bed4610370d328fcdda09bf6206384e642b18d2",
+    "evaluation/ablation.py": "cd53a4788f5e4d29761a81ad8ef60cc966949354ab9367af1b050c7eec4c70e8",
+    "evaluation/arms.py": "0f1604b5b74eb7e44a59cbde3566ccf9d10db48b20b88bfc1562c2c06afd5c90",
+    "evaluation/bypass.py": "fbe256fa5a5f2ca5eccbd892f3ecace280951f288a3be477134170cd6e66596e",
+    "evaluation/race.py": "f5c19271e58ec12db2c4be103d1d8096f4bb70f7d7b3ca20ce5d45f3f236c206",
+    "evaluation/runner.py": "7f5951aada0aa0f9b216fc335633ba88f8535a3f7de2be753e63ba7d5b49f22c",
+    "evaluation/scenarios.py": "31334c257faf0dbdd838346b4622d6d1a74756fefee592f8d977f380d1764c60",
+    "evaluation/world.py": "ba1e4eef431a7de45203d14149110b40d3d0f5a2f7e4d48c9d7f86691fbfa964",
+    "governor/__init__.py": "7d6cf6bc5478c55640a52dedf931bc1e3d53a49ca17ffbe975ae5473e7808806",
+    "governor/capability.py": "24e9a92eb13951a5f7d488748f57b625d0145e2f36d4d8b7a0c4a94f89c68038",
+    "governor/clock.py": "607c8baa75b68670e614cdd86224b34cf82a7442009ea5bd77df1fa17745bdb7",
+    "governor/decisions.py": "5dcbcc181d90ec75c6ab42a1c43a8a5d3d86d588bfbd9e8e628e812367e9d614",
+    "governor/errors.py": "cdfe2a5b05bda3d315737b7bcbe3737b71f622642951b347c27a70a7b6ffe7af",
+    "governor/evidence.py": "9e6ffdc38c6b2c7d27e429571cce76632450899636c4ba49bbed7025711692ac",
+    "governor/executor.py": "5cdd60dedc5f232c7390d095fc8e550654d3906ce9784ec98584789c8e2dfd63",
+    "governor/monitor.py": "6e9df601ea36721aad9866bec780bea67c9ea1c66fad7caf23f451702ca281c3",
+    "governor/policy.py": "2d5ca1275fb1dc6c0fc9675c2e1a949eb581c3d5c086186aa01b8cbee85b4f42",
+    "governor/state.py": "afb85d8fa83a1d0bd03e14ff4dbfcd5f5fba8872332b0af059d9527581680fbb",
+    "profiles/protected-file-v1.json": "53ef50ea5bb701879b05ce68a1ae5215a2dae53a19cb4e05203f8650badd3b1e",
+    "profiles/protected-file-v1.policy.json": "16ba7e83775d4574b0b65cd53ab302b3e8b956a19a954365e79087ac383d83ea",
+    "profiles/protected-file-v1.policy.2.json": "afe45fb5fcb670ac6c62581fd642dd4002947ed6cfa7504aad83e76b0de5e64e",
+    "profiles/PROTECTED-FILE-V1-CHANNEL-INVENTORY.md": "fcafc727cc7a6b0cb8ab0eb0e5601e85f20884deba712434a25d2455cef50310",
+    "claims/CLAIMS.json": "178cf77825c029bab3b10c4945fc0f7e65eac6ac680171abfc42e81fb03ac5e1",
+    "research/paper.pdf": "0fb34d207f97e01deaedbb8325f36b070b437a815441eae142af0bccfa35d2a2",
+    "research/paper.tex": "bd4c2dedde78d830a533dea41074d3349e28941506a5c703305efa505df1e12d"
+  },
+  "claim_scope": {
+    "complete_mediation": "NOT_ESTABLISHED",
+    "kernel_assurance": "NOT_ESTABLISHED",
+    "independent_review": "NOT_PERFORMED",
+    "delegation": "NOT_IMPLEMENTED",
+    "policy_refinement_proof": "NOT_PROVIDED"
+  },
+  "core_sha256": "013b7ced03fac4fc31092e36a812c0e6026e564e85f6f4ac707942850777a34a",
+  "release_tag": "UNRELEASED",
+  "commit": "UNCOMMITTED",
+  "working_tree_dirty": null,
+  "generated_at": "2026-10-04T09:48:41Z",
+  "environment": {
+    "python": "3.12.3",
+    "implementation": "CPython",
+    "platform": "Linux",
+    "machine": "x86_64"
+  },
+  "environment_dependent": {
+    "direct_bypass_probe": {
+      "effective_uid": 0,
+      "direct_write_default_permissions": "SUCCEEDED",
+      "direct_write_after_read_only_mode": "SUCCEEDED",
+      "chmod_then_write_by_same_uid": "SUCCEEDED",
+      "mediated_request_after_bypass": {
+        "decision": "BLOCK",
+        "reason": "STATE_INCONSISTENT"
+      },
+      "classification": "COMPLETE_MEDIATION_NOT_ESTABLISHED",
+      "explanation": "v0.1 runs the monitor in the same process and uid as the code it mediates. Non-mediated writes are possible; they are detected on the next mediated request (STATE_INCONSISTENT) but not prevented."
+    }
+  },
+  "performance": {
+    "deterministic": false,
+    "samples_per_path": 300,
+    "unit": "microseconds",
+    "blocked_path": {
+      "p50": 29.9,
+      "p99": 143.4,
+      "mean": 35.9
+    },
+    "allowed_path": {
+      "p50": 1522.8,
+      "p99": 3124.0,
+      "mean": 1615.7
+    }
+  },
+  "notes": [
+    "Counts are finite observations under this profile and attack corpus; they are not proof of zero future risk.",
+    "performance, environment and bypass-probe values are not part of core_sha256."
+  ]
+}

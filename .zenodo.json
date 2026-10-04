@@ -1,0 +1,12 @@
+{
+  "title": "The Dialectical Cage and the Glass-Box Governor",
+  "upload_type": "software",
+  "description": "Reference-monitor prototype (Protected File Mutation Profile v1), attack corpus, deterministic results and website source accompanying the paper The Dialectical Cage and the Glass-Box Governor. The prototype implements selected execution-security components only; it does not establish complete mediation, kernel assurance, or independent review. See LIMITATIONS.md.",
+  "creators": [{ "name": "Canon" }],
+  "license": "MIT",
+  "keywords": ["AI safety", "runtime verification", "capability security", "reference monitor", "agent security"],
+  "related_identifiers": [
+    { "relation": "isSupplementTo", "identifier": "10.5281/zenodo.21278446", "scheme": "doi" },
+    { "relation": "isIdenticalTo", "identifier": "https://github.com/canon4d/the-dialectical-cage-and-the-glass-box-governor", "scheme": "url" }
+  ]
+}

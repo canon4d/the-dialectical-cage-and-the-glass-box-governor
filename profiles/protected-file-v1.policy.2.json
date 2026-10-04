@@ -1,0 +1,8 @@
+{
+  "policy_version": "protected-file-v1.policy.2",
+  "default": "DENY",
+  "rules": [
+    { "principal": "agent-demo", "effect": "write_file", "resource": "record-a", "decision": "ALLOW" },
+    { "principal": "agent-demo", "effect": "delete_file", "resource": "record-a", "decision": "DENY" }
+  ]
+}
